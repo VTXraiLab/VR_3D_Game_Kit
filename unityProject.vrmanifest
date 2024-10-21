@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.unitylearn3dgamekitvr.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "C:\\Users\\McMahan User\\Documents\\Unity Projects\\Unity Learn 3D Game Kit VR\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "Unity Learn 3D Game Kit VR [Testing]"
+        }
+      }
+    }
+  ]
+}
