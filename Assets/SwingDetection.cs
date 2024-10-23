@@ -30,18 +30,19 @@ public class SwingDetection : MonoBehaviour
         {
             Collider other = contact.otherCollider;
 
-            if (other.CompareTag("target"))
+            if (other.CompareTag("target") && swinging)
             {
                 Damageable damageable = other.GetComponent<Damageable>();
-                damageable.OnDeath.Invoke();
+                
                 Damageable.DamageMessage data;
 
-                data.amount = 5;
+                data.amount = 1;
                 data.damager = this;
                 data.direction = this.transform.position;
                 data.damageSource = player.transform.position;
                 data.throwing = false;
                 data.stopCamera = false;
+
                 damageable.ApplyDamage(data);
                 Debug.Log("Collision detected with Target!");
                 // Handle the collision logic here
