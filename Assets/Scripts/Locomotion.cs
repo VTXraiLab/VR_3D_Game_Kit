@@ -1,11 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Valve.VR;
-using Valve.VR.InteractionSystem;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Locomotion : MonoBehaviour
 {
@@ -58,7 +52,7 @@ public class Locomotion : MonoBehaviour
             AirMovement();
         }
 
-        
+
     }
 
     private void CheckForJumpInput()
@@ -91,7 +85,7 @@ public class Locomotion : MonoBehaviour
         {
             jumpForce -= (gravity / fallVelocityDrag * Time.fixedDeltaTime);
         }
-        
+
         velocityMinusDrag.y = jumpForce;
 
         playerRigidbody.velocity += velocityMinusDrag;
@@ -163,6 +157,6 @@ public class Locomotion : MonoBehaviour
             print($"Left: {other.name}");
             isGrounded = false;
         }
-        
+
     }
 }
