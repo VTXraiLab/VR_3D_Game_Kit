@@ -1,6 +1,7 @@
 using Gamekit3D;
 using Gamekit3D.Message;
 using UnityEngine;
+using Valve.VR.InteractionSystem;
 
 public class SwingDetection : MonoBehaviour
 {
@@ -13,6 +14,16 @@ public class SwingDetection : MonoBehaviour
     public GameObject player;
     public PlayerController playerController;
 
+    public AudioSource thwack;
+
+    public Hand leftHand;
+    public Hand rightHand;
+
+    public bool heldInLeft;
+    public bool heldInRight;
+
+    public bool hasBeenPickedUp;
+
     void Start()
     {
         playerController = player.GetComponent<PlayerController>();
@@ -22,6 +33,11 @@ public class SwingDetection : MonoBehaviour
         }
         lastVelocity = rb.velocity;
         timer = checkInterval;
+    }
+
+    public void SetWeaponHasBeenPickedUpToTrue()
+    {
+        //hasBeenPickedUp = true;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -44,6 +60,13 @@ public class SwingDetection : MonoBehaviour
                 data.stopCamera = false;
 
                 damageable.ApplyDamage(data);
+
+                if (damageable.gameObject.name == "DestructibleBox")
+                    break;
+
+                float pitchRandomRange = 0.2f;
+                thwack.pitch = Random.Range(1.0f - pitchRandomRange, 1.0f + pitchRandomRange);
+                thwack.Play();
                 Debug.Log("Collision detected with Target!");
                 // Handle the collision logic here
                 break; // Exit after handling the first target hit
@@ -60,6 +83,24 @@ public class SwingDetection : MonoBehaviour
             CheckForSwing();
             timer = checkInterval;
         }
+
+        if (leftHand.currentAttachedObject != null)
+        {
+            heldInLeft = true;
+        }
+        else
+        {
+            heldInLeft = false;
+        }
+
+        if (rightHand.currentAttachedObject != null)
+        {
+            heldInRight = true;
+        }
+        else
+        {
+            heldInRight = false;
+        }
     }
 
     void CheckForSwing()
@@ -72,7 +113,7 @@ public class SwingDetection : MonoBehaviour
         // Check if the change is above the threshold
         if (velocityChange > swingThreshold)
         {
-            Debug.Log("Object is swinging!");
+            // Debug.Log("Object is swinging!");
             swinging = true;
         }
         else

@@ -12,7 +12,7 @@ namespace Gamekit3D
 
         protected readonly int m_HashActivePara = Animator.StringToHash("Active");
         protected readonly int m_HashInactiveState = Animator.StringToHash("Inactive");
-        protected const float k_HeartIconAnchorWidth = 0.041f;
+        protected const float k_HeartIconAnchorWidth = 0.328f; // modded code
 
         IEnumerator Start()
         {
@@ -27,8 +27,12 @@ namespace Gamekit3D
             {
                 GameObject healthIcon = Instantiate(healthIconPrefab);
                 healthIcon.transform.SetParent(transform);
+                healthIcon.transform.Rotate(0,90f,0); // modded code
                 RectTransform healthIconRect = healthIcon.transform as RectTransform;
                 healthIconRect.anchoredPosition = Vector2.zero;
+                healthIcon.transform.localPosition = new Vector3(0, 0, 0.67f); // new code
+                healthIcon.transform.eulerAngles = new Vector3(0f,0f,135f); // new code
+                // had to resize HeartIcon
                 healthIconRect.sizeDelta = Vector2.zero;
                 healthIconRect.anchorMin += new Vector2(k_HeartIconAnchorWidth, 0f) * i;
                 healthIconRect.anchorMax += new Vector2(k_HeartIconAnchorWidth, 0f) * i;
@@ -37,7 +41,7 @@ namespace Gamekit3D
                 if (representedDamageable.currentHitPoints < i + 1)
                 {
                     m_HealthIconAnimators[i].Play(m_HashInactiveState);
-                    m_HealthIconAnimators[i].SetBool(m_HashActivePara, false);
+                    m_HealthIconAnimators[i].SetBool(m_HashActivePara, true); // modded to true
                 }
             }
         }

@@ -1,3 +1,4 @@
+using Gamekit3D;
 using UnityEngine;
 using Valve.VR;
 
@@ -28,8 +29,24 @@ public class Locomotion : MonoBehaviour
     private Transform camera;
 
     [SerializeField]
-    LayerMask jumpableLayers;
+    LayerMask jumpLayers;
 
+    public RandomAudioPlayer footstepPlayer;
+    public RandomAudioPlayer jumpPlayer;
+    public RandomAudioPlayer landedPlayer;
+
+    private bool soundCanPlay = false;
+    public float soundInterval = 2.0f; // Time between sound plays (in seconds)
+
+    private float timer = 0f; // Timer to track time between sounds
+
+    private Vector2 lateralMovement = Vector2.zero;
+
+    public PlayerController controller;
+    private void Start()
+    {
+        //controller = GetComponent<PlayerController>();
+    }
 
     private void FixedUpdate()
     {
@@ -52,7 +69,40 @@ public class Locomotion : MonoBehaviour
             AirMovement();
         }
 
+        if (isGrounded)
+        {
 
+            //playerRigidbody.useGravity = true;
+            playerRigidbody.AddForce(new Vector3(0, -1.0f, 0) * playerRigidbody.mass * 6.67f);
+        }
+        else
+        {
+            //playerRigidbody.useGravity = false;
+            playerRigidbody.AddForce(new Vector3(0, 1.0f, 0) * playerRigidbody.mass * 6.67f);
+        }
+
+        SoundTimer();
+
+        
+
+
+    }
+
+    private void SoundTimer()
+    {
+        soundCanPlay = false;
+        timer += Time.deltaTime;
+
+        // Check if the timer has reached the interval
+        if (timer >= soundInterval)
+        {
+            // Play the sound
+            soundCanPlay = true;
+
+            // Reset the timer
+            timer = 0f;
+        }
+        
     }
 
     private void CheckForJumpInput()
@@ -67,6 +117,7 @@ public class Locomotion : MonoBehaviour
 
     private void StartJump()
     {
+        jumpPlayer.PlayRandomClip();
         isJumping = true;
         jumpForce = jumpHeight;
     }
@@ -122,17 +173,54 @@ public class Locomotion : MonoBehaviour
 
         Vector3 movement = forwardMovement + horizontalMovement;
 
+        lateralMovement = movement;
+
+        // print($"movement magnitude: {movement.magnitude}");
+
+        if (soundCanPlay)
+        {
+            PlayAudio();
+        }
+
+
+
         //player.transform.position += movement;
         playerRigidbody.velocity += movement * Time.fixedDeltaTime * speedScale;
 
         return movement * Time.fixedDeltaTime * speedScale;
     }
 
+    private void PlayAudio()
+    {
+        if (lateralMovement.magnitude > 0.01f && !footstepPlayer.playing && footstepPlayer.canPlay)
+        {
+            footstepPlayer.playing = true;
+            footstepPlayer.canPlay = false;
+            footstepPlayer.PlayRandomClip(controller.m_CurrentWalkingSurface, lateralMovement.magnitude < 1 ? 0 : 1);
+        }
+        else if (footstepPlayer.playing)
+        {
+            footstepPlayer.playing = false;
+        }
+        else if (lateralMovement.magnitude < 0.01f && !footstepPlayer.canPlay)
+        {
+            footstepPlayer.canPlay = true;
+        }
+
+
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if ((jumpableLayers & (1 << other.gameObject.layer)) != 0)
+        if ((jumpLayers & (1 << other.gameObject.layer)) != 0)
         {
-            print($"Hit: {other.name}");
+            // print($"Hit: {other.name}");
+
+            if (isJumping)
+            {
+                landedPlayer.PlayRandomClip();
+            }
+
             isJumping = false;
             jumpForce = 0f;
 
@@ -142,7 +230,7 @@ public class Locomotion : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if ((jumpableLayers & (1 << other.gameObject.layer)) != 0)
+        if ((jumpLayers & (1 << other.gameObject.layer)) != 0)
         {
             // print($"In: {other.name}");
 
@@ -152,7 +240,7 @@ public class Locomotion : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if ((jumpableLayers & (1 << other.gameObject.layer)) != 0)
+        if ((jumpLayers & (1 << other.gameObject.layer)) != 0)
         {
             print($"Left: {other.name}");
             isGrounded = false;

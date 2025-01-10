@@ -50,12 +50,12 @@
       "type": "boolean"
     },
     {
-      "name": "/actions/default/in/Jump",
-      "type": "boolean"
-    },
-    {
       "name": "/actions/default/in/Locomotion",
       "type": "vector2"
+    },
+    {
+      "name": "/actions/default/in/Jump",
+      "type": "boolean"
     },
     {
       "name": "/actions/default/out/Haptic",

@@ -6,6 +6,9 @@ TagManager:
   tags:
   - FlythroughCam
   - target
+  - projectile
+  - FxTemporaire
+  - weapon
   layers:
   - Default
   - TransparentFX
@@ -19,7 +22,7 @@ TagManager:
   - Player
   - PostProcessing
   - SetDressing
-  - 
+  - HandHolster
   - 
   - Vehicles
   - Navmesh

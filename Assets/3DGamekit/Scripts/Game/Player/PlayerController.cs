@@ -47,7 +47,7 @@ namespace Gamekit3D
         protected PlayerInput m_Input;                 // Reference used to determine how Ellen should move.
         protected CharacterController m_CharCtrl;      // Reference used to actually move Ellen.
         protected Animator m_Animator;                 // Reference used to make decisions based on Ellen's current animation and to set parameters.
-        protected Material m_CurrentWalkingSurface;    // Reference used to make decisions about audio.
+        public Material m_CurrentWalkingSurface;    // Reference used to make decisions about audio.
         protected Quaternion m_TargetRotation;         // What rotation Ellen is aiming to have based on input.
         protected float m_AngleDiff;                   // Angle in degrees between Ellen's current rotation and her target rotation.
         protected Collider[] m_OverlapResult = new Collider[8];    // Used to cache colliders that are near Ellen.
@@ -192,8 +192,8 @@ namespace Gamekit3D
             if (m_Input.Attack && canAttack)
                 m_Animator.SetTrigger(m_HashMeleeAttack);
 
-            CalculateForwardMovement();
-            CalculateVerticalMovement();
+            //CalculateForwardMovement();
+            //CalculateVerticalMovement();
 
             SetTargetRotation();
 
@@ -530,10 +530,10 @@ namespace Gamekit3D
             movement += m_VerticalSpeed * Vector3.up * Time.deltaTime;
 
             // Move the character controller.
-            m_CharCtrl.Move(movement);
+            //m_CharCtrl.Move(movement);
 
             // After the movement store whether or not the character controller is grounded.
-            m_IsGrounded = m_CharCtrl.isGrounded;
+            m_IsGrounded = true;
 
             // If Ellen is not on the ground then send the vertical speed to the animator.
             // This is so the vertical speed is kept when landing so the correct landing animation is played.
@@ -580,11 +580,11 @@ namespace Gamekit3D
             }
             
             // Wait for the screen to fade out.
-            yield return StartCoroutine(ScreenFader.FadeSceneOut());
+/*            yield return StartCoroutine(ScreenFader.FadeSceneOut());
             while (ScreenFader.IsFading)
             {
                 yield return null;
-            }
+            }*/
 
             // Enable spawning.
             EllenSpawn spawn = GetComponentInChildren<EllenSpawn>();
